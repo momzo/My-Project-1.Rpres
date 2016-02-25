@@ -1,0 +1,32 @@
+---
+title: "ggvis"
+author: "issa fall"
+date: "February 18, 2016"
+output: html_document
+---
+##interactive
+```{r,echo=TRUE}
+library(knitr)
+library(ggvis)
+library(shiny)
+set.seed(1233)
+cocaine<-cocaine[sample(1:nrow(cocaine), 500), ]
+```
+##A scatter plot with tooltips
+```{r,echo=TRUE}
+all_values<-function(x){
+  if(is.null(x)) return(NULL)
+  paste0(names(x), ": ",format(x), collapse = "</br />")
+}
+
+cocaine %>%
+  ggvis(x = ~weight, y = ~price) %>%
+  layer_points(size =~potency, opacity := 0.2) %>%
+  add_tooltip(all_values, "hover")
+```
+##interactive plot
+```{r,echo=TRUE}
+faithful %>%
+  ggvis(x =~waiting) %>%
+  layer_histograms(fill := "#999999", width = input_slider(min =1, max =20, value =11))
+```
