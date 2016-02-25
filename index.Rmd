@@ -1,0 +1,192 @@
+---
+title       : Interactive Document
+subtitle    : slidify + shiny
+author      : issa
+job         : Data science
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : [mathjax,bootstrap,quiz,shiny,interactive,leaflet,crosslet,datamaps]   
+mode        : selfcontained # {standalone, draft}
+ext_widgets : {rCharts: [libraries/nvd3]}
+knit        : slidify::knit2slides
+--- &radio
+
+## interactive quiz
+
+what is 1 + 1?
+
+1. 1
+2. _2_
+3. 3
+4. 4
+
+*** .hint
+
+This is a hint
+
+*** .explanation
+
+This is an explanation
+
+---
+
+## interactive charts
+
+```{r echo=FALSE,results='asis'}
+require(rCharts)
+haireye<-as.data.frame(HairEyeColor)
+n1<-nPlot(Freq ~ Hair, group = 'Eye', type = 'multiBarChart',
+          data = subset(haireye, Sex == "Male"))
+n1$print('chart1')
+```
+
+--- &interactive
+
+## interactive console
+
+```{r opts.label ='interactive', results='asis'}
+library(rCharts)
+require(googleVis)
+M1<-gvisMotionChart(Fruits, idvar = 'Fruit', timevar = 'Year')
+print(M1, tag ='chart')
+```
+
+---
+
+## interactive chart with shiny controls
+
+```{r opts.label = 'shiny'}
+slidifyUI(
+  sidebarPanel(
+    selectInput('sex','Choose Sex', c('Male','Female')),
+    selectInput('type','Choose Type',
+                c('multiBarChart', 'multiBarHorizontalChart')
+  )
+ ),
+   mainPanel(
+    tags$div(id = 'nvd3Plot', class = 'shiny-html-output nvd3 rChart')
+ )
+)
+```
+
+--- &interactive
+
+## rMaps
+
+```{r echo=FALSE,results='asis'}
+require(devtools)
+library(htmlwidgets)
+library(rMaps)
+crosslet(
+  x ="country",
+  y = c("web_index","universal_access","impact_empowerment","freedom_openness"),
+        data = web_index
+)
+```
+
+--- 
+
+## rChart
+
+```{r echo=FALSE,results='asis'}
+library(datasets)
+data("mtcars")
+library(rCharts)
+r1<-rPlot(mpg ~ wt | am + vs, data = mtcars, type ='point', color ='gear')
+r1
+```
+
+--- 
+
+## economic rChart
+
+```{r echo=FALSE,results='asis'}
+require(reshape2)
+data(economics,package = 'ggplot2')
+library(rCharts)
+econ<-transform(economics, date = as.character(date))
+m1<-mPlot(x ='date', y =c('psavert', 'unempmed'), type ='line',
+          data = econ)
+m1$set(pointSize =0, lineWidth =1)
+m1
+```
+
+--- 
+
+## Us personal expenduture
+
+```{r echo=FALSE,results='asis'}
+require(reshape2)
+uspexp<-melt(USPersonalExpenditure)
+names(uspexp)[1:2] = c('category', 'year')
+x1<-xPlot(value ~ year, group ='category', data = uspexp,
+          type ='line-dotted')
+x1
+```
+
+---
+
+## leaflet
+
+```{r echo=FALSE, results='asis'}
+require(rCharts)
+library(rMaps)
+map1<-Leaflet$new()
+map1$setView(c(45.5236, -122.675),13)
+map1$tileLayer("http://a.tiles.mapbox.com/v3/mapbox.control-room/{z}/{x}/{y}.png",zoom =8)
+map1
+
+map1<-Leaflet$new()
+map1$setView(c(45.50867, -73.55399),13)
+map1
+```
+
+---
+
+## Map 2
+
+```{r echo=FALSE, results='asis'}
+require(rCharts)
+map2<-Leaflet$new()
+map2$setView(C(45.5236, -122.675), 10)
+map2$tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
+map2
+
+map2<-Leaflet$new()
+map2$setView(c(45.50867, -73.55399), 10)
+map2
+```
+
+---
+
+## Map 3
+
+```{r echo=FALSE, results='asis'}
+require(rCharts)
+map3<-Leaflet$new()
+map3$setView(c(51.505, -0.09),zoom =13)
+map3$tileLayer(
+               "http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png", maxZoom =18
+)
+map3$marker(c(51.5, -0.09), bindPopup = "<p> Hi. I am a popup </p>")
+map3$marker(c(51.495, -0.083), bindPopup = "<p> Hi. I am another popup </p>")
+map3$show(cdn = T)
+
+map3<-Leaflet$new()
+map3$setView(c(51.5, -0.09), 13)
+map3
+
+map3$circle(c(51.5, -0.09))
+```
+
+---
+
+
+
+
+
+
+
+
+
