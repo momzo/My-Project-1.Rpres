@@ -22,3 +22,5 @@ server<-function(input,output){
   runGadget(ui,server)
 }
 
+pwd<-get_password()
+pwd
