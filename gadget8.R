@@ -8,7 +8,7 @@ lmGadget<-function(data, xvar,yvar){
   ui<-miniPage(
     gadgetTitleBar("Interactive lm"),
     miniContentPanel(
-      fillRow(flex = c(NA,1)),
+      fillRow(flex = c(NA,1),
       fillCol(width = "100px",
               selectInput("degree", "Polynomial degree", c(1,2,3,4))
               ),
@@ -20,12 +20,14 @@ lmGadget<-function(data, xvar,yvar){
                    )
                  )
     )
-  )
+  ),
   
   miniButtonBlock(
     actionButton("exclude_toggle","Toggle points"),
     actionButton("exclude_reset","Reset")
+  
   )
+)
 
 
 server<-function(input,output){
@@ -35,8 +37,8 @@ server<-function(input,output){
   output$plot1<-renderPlot({
     req(input$degree)
     formula<-as.formula(paste0("y ~ poly(x, degree = ",input$degree, ")"))
-    keep<-data[ vals$keeprows, ,drop =FALSE]
-    exclude<-data[ vals$keeprows, ,drop =FALSE]
+    keep<-data[vals$keeprows, ,drop =FALSE]
+    exclude<-data[!vals$keeprows, ,drop =FALSE]
     
     ggplot(keep, aes_string(xvar, yvar)) +
       geom_point(size = 3) +
