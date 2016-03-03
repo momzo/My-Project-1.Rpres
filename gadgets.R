@@ -1,7 +1,5 @@
 
-
 library(shiny)
-
 get_password<-function(){
   library(miniUI)
   ui<-miniPage(
@@ -10,7 +8,7 @@ get_password<-function(){
       passwordInput("password", "")
     )
   )
-}
+
 
 server<-function(input,output){
   observeEvent(input$done, {
@@ -19,8 +17,10 @@ server<-function(input,output){
   observeEvent(input$cancel, {
     stopApp(stop("No password.", call. = FALSE))
   })
+}
   runGadget(ui,server)
 }
 
 pwd<-get_password()
 pwd
+
