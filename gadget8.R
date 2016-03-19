@@ -4,10 +4,17 @@ lmGadget<-function(data, xvar,yvar){
   library(shiny)
   library(miniUI)
   library(ggplot2)
+  library(shinydashboard)
+  
   
   ui<-miniPage(
     gadgetTitleBar("Interactive lm"),
     miniContentPanel(
+      ## The parameter flex determines how space should be distributed
+      ## to the cells.Can be a space;or use a vector of numbers to 
+      ## specify the proportions.
+      ## NA values will cause the corresponding cell to be sized
+      ## according to its contents (without growing or shrinking)
       fillRow(flex = c(NA,1),
       fillCol(width = "100px",
               selectInput("degree", "Polynomial degree", c(1,2,3,4))
@@ -18,7 +25,8 @@ lmGadget<-function(data, xvar,yvar){
                  brush = brushOpts(
                    id = "plot_brush"
                    )
-                 )
+                 ),
+      rstudioapi::askForPassword("please enter your password")
     )
   ),
   
@@ -30,7 +38,11 @@ lmGadget<-function(data, xvar,yvar){
 )
 
 
+
 server<-function(input,output){
+  
+  ## Use reactiveValues() to accumulate state
+  
   vals<-reactiveValues(
     keeprows =rep(TRUE, nrow(data))
   )
@@ -47,6 +59,8 @@ server<-function(input,output){
       coord_cartesian(xlim = range(data[[xvar]]), ylim = range(data[[yvar]]))+
       theme_bw(base_size = 14)
   })
+  
+  ## Toggle points that are brushed
   
   observeEvent(input$plot1_click, {
     res<-nearPoints(data, input$plot_click, allRows = TRUE)
@@ -70,13 +84,18 @@ server<-function(input,output){
       list(
         data = keep_data,
         model = lm(formlua, keep_data)
+        
       )
+      
     )
+    
+  
   })
+
 }
 
  runGadget(ui,server)
 }
 
-m<-lmGadget(mtcars,"wt","mpg")
+m<-lmGadget(mtcars, "wt","mpg")
 m
